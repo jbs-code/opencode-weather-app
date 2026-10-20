@@ -1,0 +1,20 @@
+{
+  "cities": [
+    {
+      "id": "f9e3f546-872d-4a76-8f54-33838b4e8364",
+      "name": "Ottawa",
+      "latitude": 45.41117,
+      "longitude": -75.69812,
+      "country": "Canadá"
+    },
+    {
+      "id": "7147f6b9-fa05-4193-a671-9ebff3b87a78",
+      "name": "Ciudad de México",
+      "latitude": 19.42847,
+      "longitude": -99.12766,
+      "country": "México"
+    }
+  ],
+  "defaultCityId": null,
+  "unit": "celsius"
+}
