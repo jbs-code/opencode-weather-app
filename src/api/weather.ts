@@ -1,23 +1,12 @@
-import type { CurrentWeather, DailyForecast } from "../types";
-import { FORECAST_URL } from "../constants";
-import { describeWeatherCode } from "../weather-codes";
-
-interface WeatherResponse {
-  current?: {
-    temperature_2m: number;
-    weather_code?: number;
-  };
-}
-
-interface ForecastResponse {
-  daily?: {
-    time?: string[];
-    weather_code?: Array<number | null>;
-    temperature_2m_max?: Array<number | null>;
-    temperature_2m_min?: Array<number | null>;
-    precipitation_probability_max?: Array<number | null>;
-  };
-}
+import type {
+  CurrentWeather,
+  DailyForecast,
+  ForecastApiResponse,
+  WeatherApiResponse,
+} from "../types/Weather.ts";
+import type { TemperatureUnit } from "../types/Settings.ts";
+import { FORECAST_URL } from "../utils/constants.ts";
+import { describeWeatherCode } from "../utils/weatherCodes.ts";
 
 const DAILY_FIELDS = "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max";
 const FORECAST_DAYS = 7;
@@ -25,13 +14,13 @@ const FORECAST_DAYS = 7;
 export async function fetchWeather(
   lat: number,
   lon: number,
-  unit: "celsius" | "fahrenheit"
+  unit: TemperatureUnit
 ): Promise<CurrentWeather> {
   const tempUnit = unit === "celsius" ? "celsius" : "fahrenheit";
   const url = `${FORECAST_URL}?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code&temperature_unit=${tempUnit}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Error ${res.status} al consultar el clima`);
-  const data = (await res.json()) as WeatherResponse;
+  const data = (await res.json()) as WeatherApiResponse;
   const current = data.current;
   if (!current) throw new Error("No hay datos de clima disponibles");
 
@@ -44,13 +33,13 @@ export async function fetchWeather(
 export async function fetchForecast(
   lat: number,
   lon: number,
-  unit: "celsius" | "fahrenheit"
+  unit: TemperatureUnit
 ): Promise<DailyForecast[]> {
   const tempUnit = unit === "celsius" ? "celsius" : "fahrenheit";
   const url = `${FORECAST_URL}?latitude=${lat}&longitude=${lon}&daily=${DAILY_FIELDS}&forecast_days=${FORECAST_DAYS}&temperature_unit=${tempUnit}&timezone=auto`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Error ${res.status} al consultar el pronóstico`);
-  const data = (await res.json()) as ForecastResponse;
+  const data = (await res.json()) as ForecastApiResponse;
   const daily = data.daily;
   if (!daily?.time?.length) throw new Error("No hay datos de pronóstico disponibles");
 

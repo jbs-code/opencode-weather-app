@@ -1,11 +1,22 @@
-import type { City, Readline } from "../types";
-import type { Colors } from "./colors";
-import { ask } from "./prompt";
+import type { City, CitySelection } from "../types/City.ts";
+import type { Colors } from "../types/Colors.ts";
+import type { Readline } from "../types/Readline.ts";
+import * as readline from "node:readline/promises";
 
-export type CitySelection =
-  | { kind: "selected"; city: City }
-  | { kind: "invalid" }
-  | { kind: "cancelled" };
+export function createInput(): Readline {
+  return readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+}
+
+export function closeInput(rl: Readline): void {
+  rl.close();
+}
+
+export async function ask(rl: Readline, message: string): Promise<string> {
+  return rl.question(message);
+}
 
 export interface SelectCityOptions {
   title?: string;

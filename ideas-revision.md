@@ -6,5 +6,5 @@
 - [ ] **Ciudades:** geocoding solo trae 1 resultado; nombres ambiguos pueden fallar.
 - [ ] **Tests:** no existen; conviene al menos probar storage y las APIs con mocks.
 - [x] **7 day forecast** agregar la posibilidad de obtener el pronóstico para los próximos 7 días.
-- [ ] **Escalabilidad:** ¿qué tan fácil será expandir con nuevas funcionalidades?
+- [x] **Escalabilidad:** ¿qué tan fácil será expandir con nuevas funcionalidades? → refactor por capas en `src/` (types, utils, api, storage, presentation, actions), una acción por archivo.
 - [ ] **Carga:** ¿hay estado de carga en las tareas asíncronas?

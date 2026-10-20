@@ -1,3 +1,5 @@
+import type { Colors } from "../types/Colors.ts";
+
 const ANSI = {
   reset: "\x1b[0m",
   bold: "\x1b[1m",
@@ -15,15 +17,6 @@ export function shouldUseColor(): boolean {
   if (process.env["NO_COLOR"] !== undefined) return false;
   return process.stdout.isTTY === true;
 }
-
-export type Colors = {
-  cyan: (text: string) => string;
-  yellow: (text: string) => string;
-  green: (text: string) => string;
-  red: (text: string) => string;
-  bold: (text: string) => string;
-  dim: (text: string) => string;
-};
 
 export function createColors(enabled = shouldUseColor()): Colors {
   const wrap = (code: string) => (text: string) =>

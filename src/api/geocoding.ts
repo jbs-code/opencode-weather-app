@@ -1,5 +1,5 @@
-import type { City } from "../types";
-import { GEOCODING_URL } from "../constants";
+import type { City } from "../types/City.ts";
+import { GEOCODING_URL } from "../utils/constants.ts";
 
 interface GeocodingResult {
   results?: Array<{

@@ -1,5 +1,6 @@
-import type { CurrentWeather, DailyForecast } from "../types";
-import type { Colors } from "./colors";
+import type { CurrentWeather, DailyForecast } from "../types/Weather.ts";
+import type { Colors } from "../types/Colors.ts";
+import type { TemperatureUnit } from "../types/Settings.ts";
 
 interface Column {
   header: string;
@@ -12,7 +13,7 @@ export function formatWeather(colors: Colors, weather: CurrentWeather, symbol: s
   return `${weather.description}, ${colors.yellow(weather.temperature.toFixed(1) + symbol)}`;
 }
 
-export function unitSymbol(unit: "celsius" | "fahrenheit"): string {
+export function unitSymbol(unit: TemperatureUnit): string {
   return unit === "celsius" ? "°C" : "°F";
 }
 

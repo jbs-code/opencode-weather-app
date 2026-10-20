@@ -1,7 +1,4 @@
-export const GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search";
-export const FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
-
-export const WEATHER_CODES: Record<number, string> = {
+const WEATHER_CODES: Record<number, string> = {
   0: "Cielo despejado",
   1: "Mayormente despejado",
   2: "Parcialmente nublado",
@@ -31,3 +28,7 @@ export const WEATHER_CODES: Record<number, string> = {
   96: "Tormenta con granizo ligero",
   99: "Tormenta con granizo intenso",
 };
+
+export function describeWeatherCode(code: number | null | undefined): string {
+  return WEATHER_CODES[code ?? 0] ?? "Desconocido";
+}
