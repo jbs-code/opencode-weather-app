@@ -5,6 +5,6 @@
 - [x] **Binario:** La persistencia debe ser de manera global, es decir, no importa si muevo el binario de lugar, la aplicación debe de seguir funcionando y mantener la información.
 - [ ] **Ciudades:** geocoding solo trae 1 resultado; nombres ambiguos pueden fallar.
 - [ ] **Tests:** no existen; conviene al menos probar storage y las APIs con mocks.
-- [ ] **7 day forecast** agregar la posibilidad de obtener el pronóstico para los próximos 7 días.
+- [x] **7 day forecast** agregar la posibilidad de obtener el pronóstico para los próximos 7 días.
 - [ ] **Escalabilidad:** ¿qué tan fácil será expandir con nuevas funcionalidades?
 - [ ] **Carga:** ¿hay estado de carga en las tareas asíncronas?

@@ -19,4 +19,12 @@ export interface CurrentWeather {
   description: string;
 }
 
+export interface DailyForecast {
+  date: string;
+  description: string;
+  temperatureMax: number | null;
+  temperatureMin: number | null;
+  precipitationProbability: number | null;
+}
+
 export type Readline = ReturnType<typeof readline.createInterface>;

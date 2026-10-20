@@ -1,5 +1,6 @@
-import type { CurrentWeather } from "../types";
-import { FORECAST_URL, WEATHER_CODES } from "../constants";
+import type { CurrentWeather, DailyForecast } from "../types";
+import { FORECAST_URL } from "../constants";
+import { describeWeatherCode } from "../weather-codes";
 
 interface WeatherResponse {
   current?: {
@@ -7,6 +8,19 @@ interface WeatherResponse {
     weather_code?: number;
   };
 }
+
+interface ForecastResponse {
+  daily?: {
+    time?: string[];
+    weather_code?: Array<number | null>;
+    temperature_2m_max?: Array<number | null>;
+    temperature_2m_min?: Array<number | null>;
+    precipitation_probability_max?: Array<number | null>;
+  };
+}
+
+const DAILY_FIELDS = "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max";
+const FORECAST_DAYS = 7;
 
 export async function fetchWeather(
   lat: number,
@@ -21,6 +35,30 @@ export async function fetchWeather(
   const current = data.current;
   if (!current) throw new Error("No hay datos de clima disponibles");
 
-  const desc = WEATHER_CODES[current.weather_code ?? 0] ?? "Desconocido";
-  return { temperature: current.temperature_2m, description: desc };
+  return {
+    temperature: current.temperature_2m,
+    description: describeWeatherCode(current.weather_code),
+  };
+}
+
+export async function fetchForecast(
+  lat: number,
+  lon: number,
+  unit: "celsius" | "fahrenheit"
+): Promise<DailyForecast[]> {
+  const tempUnit = unit === "celsius" ? "celsius" : "fahrenheit";
+  const url = `${FORECAST_URL}?latitude=${lat}&longitude=${lon}&daily=${DAILY_FIELDS}&forecast_days=${FORECAST_DAYS}&temperature_unit=${tempUnit}&timezone=auto`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Error ${res.status} al consultar el pronóstico`);
+  const data = (await res.json()) as ForecastResponse;
+  const daily = data.daily;
+  if (!daily?.time?.length) throw new Error("No hay datos de pronóstico disponibles");
+
+  return daily.time.map((date, index) => ({
+    date,
+    description: describeWeatherCode(daily.weather_code?.[index]),
+    temperatureMax: daily.temperature_2m_max?.[index] ?? null,
+    temperatureMin: daily.temperature_2m_min?.[index] ?? null,
+    precipitationProbability: daily.precipitation_probability_max?.[index] ?? null,
+  }));
 }

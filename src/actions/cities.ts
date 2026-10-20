@@ -1,6 +1,7 @@
 import type { WeatherState, Readline } from "../types";
 import type { Colors } from "../ui/colors";
 import { ask } from "../ui/prompt";
+import { selectCity } from "../ui/select";
 import { geocodeCity } from "../api/geocoding";
 import { saveState } from "../storage";
 
@@ -34,20 +35,19 @@ export async function removeCity(state: WeatherState, rl: Readline, colors: Colo
     console.log("No hay ciudades para eliminar.\n");
     return state;
   }
-  console.log("\nCiudades registradas:");
-  state.cities.forEach((c, i) => {
-    const marker = c.id === state.defaultCityId ? " (default)" : "";
-    console.log(`  ${i + 1}. ${c.name}${marker}`);
-  });
-  const answer = await ask(rl, "  Número de ciudad a eliminar: ");
-  const index = parseInt(answer, 10) - 1;
-  if (Number.isNaN(index) || index < 0 || index >= state.cities.length) {
+  const selection = await selectCity(rl, state.cities, colors, { defaultCityId: state.defaultCityId });
+  if (selection.kind === "invalid") {
     console.log(colors.red("Número inválido.\n"));
     return state;
   }
-  const removed = state.cities[index]!;
+  if (selection.kind === "cancelled") {
+    console.log(colors.yellow("Operación cancelada.\n"));
+    return state;
+  }
+
+  const removed = selection.city;
   const newDefault = state.defaultCityId === removed.id ? null : state.defaultCityId;
-  const newState = { ...state, cities: state.cities.filter((_, i) => i !== index), defaultCityId: newDefault };
+  const newState = { ...state, cities: state.cities.filter((c) => c.id !== removed.id), defaultCityId: newDefault };
   saveState(newState);
   console.log(colors.green(`Ciudad "${removed.name}" eliminada.\n`));
   return newState;
@@ -58,21 +58,19 @@ export async function setDefaultCity(state: WeatherState, rl: Readline, colors: 
     console.log("No hay ciudades registradas.\n");
     return state;
   }
-  console.log("\nCiudades registradas:");
-  state.cities.forEach((c, i) => {
-    const marker = c.id === state.defaultCityId ? " (actual)" : "";
-    console.log(`  ${i + 1}. ${c.name}${marker}`);
-  });
-  const answer = await ask(rl, "  Número de ciudad para default: ");
-  const index = parseInt(answer, 10) - 1;
-  if (Number.isNaN(index) || index < 0 || index >= state.cities.length) {
+  const selection = await selectCity(rl, state.cities, colors, { defaultCityId: state.defaultCityId });
+  if (selection.kind === "invalid") {
     console.log(colors.red("Número inválido.\n"));
     return state;
   }
-  const city = state.cities[index]!;
-  const cityName = city.name;
+  if (selection.kind === "cancelled") {
+    console.log(colors.yellow("Operación cancelada.\n"));
+    return state;
+  }
+
+  const city = selection.city;
   const newState: WeatherState = { ...state, defaultCityId: city.id };
   saveState(newState);
-  console.log(colors.green(`Ciudad default establecida: ${cityName}.\n`));
+  console.log(colors.green(`Ciudad default establecida: ${city.name}.\n`));
   return newState;
 }

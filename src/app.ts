@@ -5,7 +5,7 @@ import { loadState } from "./storage";
 import { renderMenu } from "./ui/menu";
 import { createColors } from "./ui/colors";
 import { ask } from "./ui/prompt";
-import { showDefaultWeather, showAllWeather } from "./actions/weather";
+import { showDefaultWeather, showAllWeather, showForecast } from "./actions/weather";
 import { addCity, removeCity, setDefaultCity } from "./actions/cities";
 import { toggleUnit } from "./actions/settings";
 
@@ -34,6 +34,10 @@ const ACTIONS: Record<string, Action> = {
   "5": {
     label: () => "Establecer ciudad default",
     run: setDefaultCity,
+  },
+  "6": {
+    label: () => "Pronóstico 7 días",
+    run: showForecast,
   },
   "8": {
     label: (state) => `Ajustes (${state.unit === "celsius" ? "°C" : "°F"})`,
