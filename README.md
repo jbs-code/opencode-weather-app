@@ -32,6 +32,23 @@ https://api.open-meteo.com/v1/forecast?latitude=45.41117&longitude=-75.69812&dai
 bun init
 ```
 
+## Tests
+
+La suite usa el runner nativo de Bun (`bun:test`) y vive en `tests/`, replicando la estructura de `src/`.
+
+```bash
+bun test              # suite completa
+bun test --watch      # modo watch
+bun test --coverage   # cobertura
+bun run build         # ejecuta los tests y solo después compila el binario
+```
+
+- `tests/<capa>/<archivo>.test.ts` — un archivo por módulo de `src/`
+- `tests/helpers/` — fixtures, captura de consola, sandbox temporal de disco y mock de `fetch`
+- `tests/index.test.ts` — E2E: lanza la app como subproceso con `WEATHER_HOME` temporal y responde al menú
+
+Ningún test sale a la red: `fetch` está interceptado y la persistencia se redirige a un directorio temporal mediante `WEATHER_HOME`.
+
 ### Ejemplo del menú
 Esta es la apariencia que deseamos crear
 
